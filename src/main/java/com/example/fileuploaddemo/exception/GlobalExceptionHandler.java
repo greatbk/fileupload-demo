@@ -3,7 +3,6 @@ package com.example.fileuploaddemo.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -16,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class GlobalExceptionHandler {
 
+    /*
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseException handleConflict(HttpServletRequest req) {
@@ -23,6 +23,7 @@ public class GlobalExceptionHandler {
         responseException.setStatus(HttpStatus.CONFLICT.value());
         return responseException;
     }
+    */
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseException handleNotFound(HttpServletRequest req) {
@@ -32,11 +33,8 @@ public class GlobalExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(BizException.class)
-    public ResponseException handleUnauthorized(HttpServletRequest req, BizException e) {
+    public ResponseException handleUnauthorized(HttpServletRequest req) {
         ResponseException responseException = new ResponseException();
-        responseException.setCode(e.getCode());
-        responseException.setMsg(e.getMessage());
         responseException.setStatus(HttpStatus.UNAUTHORIZED.value());
         return responseException;
     }

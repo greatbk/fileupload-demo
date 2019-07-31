@@ -31,6 +31,11 @@ public class UploadFile {
     private long size;
 
     /**
+     * BASE64로 인코딩된 파일 문자열
+     */
+    private String base64String;
+
+    /**
      * 서버 기본 경로
      */
     private String serverBasePath;
