@@ -1,1 +1,10 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 60MB
 
+
+file:
+  upload:
+    basePath: C:/upload/dis

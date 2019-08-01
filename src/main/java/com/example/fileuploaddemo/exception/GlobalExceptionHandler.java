@@ -15,25 +15,15 @@ import javax.servlet.http.HttpServletRequest;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class GlobalExceptionHandler {
 
-    /*
-    @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseException handleConflict(HttpServletRequest req) {
-        ResponseException responseException = new ResponseException();
-        responseException.setStatus(HttpStatus.CONFLICT.value());
-        return responseException;
-    }
-    */
-
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseException handleNotFound(HttpServletRequest req) {
+    public ResponseException handleNotFound(HttpServletRequest request) {
         ResponseException responseException = new ResponseException();
         responseException.setStatus(HttpStatus.NOT_FOUND.value());
         return responseException;
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseException handleUnauthorized(HttpServletRequest req) {
+    public ResponseException handleUnauthorized(HttpServletRequest request) {
         ResponseException responseException = new ResponseException();
         responseException.setStatus(HttpStatus.UNAUTHORIZED.value());
         return responseException;
@@ -41,7 +31,7 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(BizException.class)
-    public ResponseException handleForbidden(HttpServletRequest req, BizException e) {
+    public ResponseException handleForbidden(HttpServletRequest reqeust, BizException e) {
         ResponseException responseException = new ResponseException();
         responseException.setCode(e.getCode());
         responseException.setMsg(e.getMessage());
@@ -51,7 +41,7 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    public ResponseException handleException(HttpServletRequest req, Exception e) {
+    public ResponseException handleException(HttpServletRequest request, Exception e) {
         ResponseException responseException = new ResponseException();
         responseException.setMsg(e.getMessage());
         responseException.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());

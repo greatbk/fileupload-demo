@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
@@ -23,7 +23,7 @@ public class UploadFile {
     /**
      * 확장자
      */
-    private String ext;
+    private String extension;
 
     /**
      * 파일크기
@@ -71,13 +71,20 @@ public class UploadFile {
         if(file != null) {
             filename = file.getOriginalFilename();
             size = file.getSize();
+            extension = parseExtension();
             serverFilename = createServerFilename();
-            ext = getExtension();
+            serverPath = createServerPath();
+        }
+    }
 
-            //전체 경로 설정
-            if(!StringUtils.isEmpty(serverBasePath)) {
-                serverPath = createServerPath();
-            }
+    /**
+     * 초기화
+     */
+    public void init() {
+        if(StringUtils.isNotEmpty(filename)) {
+            extension = parseExtension();
+            serverFilename = createServerFilename();
+            serverPath = createServerPath();
         }
     }
 
@@ -87,11 +94,7 @@ public class UploadFile {
      */
     public void setServerBasePath(String serverBasePath) {
         this.serverBasePath = serverBasePath;
-
-        //전체 경로 설정
-        if(!StringUtils.isEmpty(serverBasePath)) {
-            serverPath = createServerPath();
-        }
+        serverPath = createServerPath();
     }
 
     /**
@@ -100,11 +103,7 @@ public class UploadFile {
      */
     public void setSubPath(String subPath) {
         this.subPath = subPath;
-
-        //전체 경로 설정
-        if(!StringUtils.isEmpty(serverBasePath)) {
-            serverPath = createServerPath();
-        }
+        serverPath = createServerPath();
     }
 
     /**
@@ -113,8 +112,6 @@ public class UploadFile {
      */
     public void setKeepOriginalFilename(boolean keepOriginalFilename) {
         this.keepOriginalFilename = keepOriginalFilename;
-
-        //서버 파일명 설정
         serverFilename = createServerFilename();
     }
 
@@ -122,7 +119,7 @@ public class UploadFile {
      * 파일 확장자를 반환한다.
      * @return 파일 확장자
      */
-    private String getExtension() {
+    private String parseExtension() {
         if(filename != null) {
             int index = filename.lastIndexOf(".");
             if(index >= 0) {

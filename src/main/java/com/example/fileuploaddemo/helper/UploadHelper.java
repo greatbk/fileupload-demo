@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.MediaType;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,15 +18,15 @@ public class UploadHelper {
     /**
      * 이미지 확장자 배열
      */
-    private static String[] imageExtNames = new String[]{"gif", "png", "jpg", "jpeg"};
+    private static String[] IMAGE_EXTENSIONS = new String[]{"gif", "png", "jpg", "jpeg"};
 
     /**
      *  이미지 파일의 확장자를 가진 경우 true를 반환한다.
      * @param uploadFile 업로드된 파일 정보
      * @return true 이미지파일 확장자, false 이미지파일 확장자가 아님
      */
-    public static boolean isFileTypeImage(UploadFile uploadFile) {
-        if(Arrays.asList(imageExtNames).contains(uploadFile.getExt())) {
+    public static boolean isImageExtension(UploadFile uploadFile) {
+        if(Arrays.asList(IMAGE_EXTENSIONS).contains(uploadFile.getExtension())) {
             return true;
         }
         return false;
@@ -33,7 +35,7 @@ public class UploadHelper {
     /**
      * 업로드해서 안되는 확장자
      */
-    private static String[] denyFileTypes = new String[] {
+    private static String[] DENY_EXTENSIONS = new String[] {
             "asp", "jsp", "php", "js",
             "xml", "json", "yml", "yaml", "properties",
             "exe", "bat", "com",
@@ -50,8 +52,8 @@ public class UploadHelper {
      * @param uploadFile 업로드된 파일 정보
      * @return ture 업로드 가능한 확장자, false 업로드 불가능한 확장자
      */
-    public static boolean isDenyFileType(UploadFile uploadFile) {
-        if(Arrays.asList(denyFileTypes).contains(uploadFile.getExt())) {
+    public static boolean isDenyExtension(UploadFile uploadFile) {
+        if(Arrays.asList(DENY_EXTENSIONS).contains(uploadFile.getExtension())) {
             return true;
         }
         return false;
@@ -118,18 +120,68 @@ public class UploadHelper {
      * @param uploadFile 업로드된 파일 정보
      * @return 파일
      */
-    public static File decodeBase64(UploadFile uploadFile) {
+    private static File decodeBase64(UploadFile uploadFile) throws IOException {
         if(uploadFile != null) {
-            byte[] bytes = Base64.decodeBase64(uploadFile.getBase64String());
             File file = new File(uploadFile.getServerPath(), uploadFile.getServerFilename());
+            byte[] bytes = Base64.decodeBase64(uploadFile.getBase64String());
+            FileUtils.writeByteArrayToFile(file, bytes);
 
-            try {
-                FileUtils.writeByteArrayToFile(file, bytes);
-                return file;
-            } catch(IOException e) {
-                throw new RuntimeException(e);
-            }
+            uploadFile.setSize(file.length());
+            return file;
         }
         return null;
+    }
+
+    /**
+     * 파일을 저장한다.
+     * @param file 업로드한 파일
+     * @param uploadFile 업로드한 파일 정보
+     * @throws IOException
+     */
+    public static void save(MultipartFile file, UploadFile uploadFile) throws IOException {
+        if(file != null && uploadFile != null) {
+            createDirectory(uploadFile);
+            File filePath = new File(uploadFile.getServerPath(), uploadFile.getServerFilename());
+            file.transferTo(filePath);
+        }
+    }
+
+    /**
+     * BASE64 문자열로 전달받은 파일을 저장한다.
+     * @param uploadFile
+     * @throws IOException
+     */
+    public static void save(UploadFile uploadFile) throws IOException {
+        if(uploadFile != null) {
+            createDirectory(uploadFile);
+            decodeBase64(uploadFile);
+        }
+    }
+
+    /**
+     * 파일 저장을 위한 디렉토리를 생성한다.
+     * @param uploadFile 업로드한 파일 정보
+     */
+    private static void createDirectory(UploadFile uploadFile) {
+        File serverPath = new File(uploadFile.getServerPath());
+        if(serverPath != null && !serverPath.exists()) {
+            serverPath.mkdirs();
+        }
+    }
+
+    /**
+     * 확장자에 대한 마임타입을 반환한다.
+     * @param uploadFile 업로드한 파일 정보
+     * @return 마임타입
+     */
+    public static MediaType getMimeType(UploadFile uploadFile) {
+        if("gif".equals(uploadFile.getExtension())) {
+            return MediaType.IMAGE_GIF;
+        } else if ("png".equals(uploadFile.getExtension())) {
+            return MediaType.IMAGE_PNG;
+        } else if ("jpg".equals(uploadFile.getExtension()) || "jpeg".equals(uploadFile.getExtension())) {
+            return MediaType.IMAGE_JPEG;
+        }
+        return MediaType.APPLICATION_OCTET_STREAM;
     }
 }
