@@ -2,7 +2,12 @@
 <configuration>
     <include resource="log/console.xml" />
     <include resource="log/file.xml" />
-    <root level="debug">
+
+    <logger name="com.example.fileuploaddemo" level="debug" addivitity="false">
+        <appender-ref ref="console"/>
+    </logger>
+
+    <root level="info">
         <springProfile name="local">
             <appender-ref ref="console"/>
         </springProfile>
