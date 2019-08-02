@@ -20,7 +20,6 @@ import java.io.File;
 public class Base64FileEncodeTest {
 
     private String testResourcePath;
-    private String serverBasePath;
 
     @Before
     public void setup() {
