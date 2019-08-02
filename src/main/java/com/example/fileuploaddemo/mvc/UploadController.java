@@ -26,7 +26,7 @@ public class UploadController {
     private String basePath;
 
     /**
-     * 파일을 업로드한다. (Form)
+     * 파일을 업로드한다. (Multipart 요청)
      * @param files 업로드한 파일
      * @param param 업로드한 파일 정보
      * @return 서버에 업로드된 파일 정보
@@ -79,8 +79,8 @@ public class UploadController {
             }
 
             //객체 정보 설정
-            uploadFile.setSubPath(subPath);
             uploadFile.setServerBasePath(basePath);
+            uploadFile.setSubPath(subPath);
             uploadFile.setKeepOriginalFilename(keepOriginalFilename);
             log.debug(uploadFile.toString());
 
@@ -155,7 +155,7 @@ public class UploadController {
     }
 
     /**
-     * 파일을 업로드한다. (Base64)
+     * 파일을 업로드한다. (JSON 메시지를 RequestBody로 받음)
      * @param files 업로드한 파일 정보
      * @return 서버에 업로드된 파일 정보
      * @throws Exception
@@ -205,8 +205,9 @@ public class UploadController {
             }
 
             try {
-                uploadFile.init();
+                uploadFile.init(basePath);
                 UploadHelper.save(uploadFile);
+                uploadFile.setBase64String(null);
 
             } catch(IOException e) {
                 throw new BizException("파일 업로드시 오류가 발생하였습니다. index:[" + index + "]");

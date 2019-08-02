@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+        <charset>UTF-8</charset>
+        <pattern>%date |%-5level| [%thread] [%file:%line] - %msg%n%ex{full}</pattern>
+    </encoder>
+</appender>

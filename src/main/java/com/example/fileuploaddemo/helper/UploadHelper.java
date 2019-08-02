@@ -45,7 +45,8 @@ public class UploadHelper {
             "py", "pyc", "pyd", "pyo",
             "gradle",
             "sh", "zsh", "csh",
-            "deb", "rpm"
+            "deb", "rpm",
+            "jar", "war"
     };
 
     /**

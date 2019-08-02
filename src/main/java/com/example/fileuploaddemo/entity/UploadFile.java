@@ -1,6 +1,7 @@
 package com.example.fileuploaddemo.entity;
 
 import com.example.fileuploaddemo.helper.UploadHelper;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -80,7 +81,10 @@ public class UploadFile {
     /**
      * 초기화
      */
-    public void init() {
+    public void init(String serverBasePath) {
+        if(StringUtils.isNotEmpty(serverBasePath)) {
+            this.serverBasePath = serverBasePath;
+        }
         if(StringUtils.isNotEmpty(filename)) {
             extension = parseExtension();
             serverFilename = createServerFilename();
@@ -160,5 +164,20 @@ public class UploadFile {
     public static List<UploadFile> bind(String jsonString) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         return Arrays.asList(mapper.readValue(jsonString, UploadFile[].class));
+    }
+
+    /**
+     * UploadFile 인스턴스 정보를 JSON 문자열로 반환한다.
+     * @param uploadFile 업로드한 파일
+     * @return JSON 문자열
+     */
+    public static String toJson(UploadFile uploadFile) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(uploadFile);
+
+        } catch(JsonProcessingException e) {
+            return null;
+        }
     }
 }

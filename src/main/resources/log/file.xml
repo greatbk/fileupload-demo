@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<appender name="dailyRollingFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <fileNamePattern>${LOG_FILE}/folka_log.%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+        <maxHistory>30</maxHistory>
+        <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+            <maxFileSize>100MB</maxFileSize>
+        </timeBasedFileNamingAndTriggeringPolicy>
+    </rollingPolicy>
+    <encoder>
+        <charset>UTF-8</charset>
+        <pattern>%date |%-5level| [%thread] [%file:%line] - %msg%n%ex{full}</pattern>
+    </encoder>
+</appender>
