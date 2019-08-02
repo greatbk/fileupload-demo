@@ -177,25 +177,26 @@ public class UploadController {
         }
 
         //파일을 저장
+        int index = 1;
         for(UploadFile uploadFile : files) {
             if(uploadFile == null) {
-                throw new BizException("잘못된 파일입니다. index:[" + files.size() + 1 + "]");
+                throw new BizException("잘못된 파일입니다. index:[" + index + "]");
             }
             log.debug(uploadFile.toString());
 
             //filename 파라미터 체크
             if(StringUtils.isEmpty(uploadFile.getFilename())) {
-                throw new BizException("filename 설정정보를 찾을 수 없습니다.");
+                throw new BizException("filename 설정정보를 찾을 수 없습니다. index:[" + index + "]");
             }
 
             //base64String 파라미터 체크
             if(StringUtils.isEmpty(uploadFile.getBase64String())) {
-                throw new BizException("파일을 찾을 수 없습니다. [" + uploadFile.getFilename() + "]");
+                throw new BizException("파일을 찾을 수 없습니다. index:[" + index + "]");
             }
 
             //subPath 파라미터 체크
             if(StringUtils.isEmpty(uploadFile.getSubPath())) {
-                throw new BizException("subPath 설정정보를 찾을 수 없습니다.");
+                throw new BizException("subPath 설정정보를 찾을 수 없습니다. index:[" + index + "]");
             }
 
             //기본 확장자 체크
@@ -208,8 +209,9 @@ public class UploadController {
                 UploadHelper.save(uploadFile);
 
             } catch(IOException e) {
-                throw new BizException("파일 업로드시 오류가 발생하였습니다.");
+                throw new BizException("파일 업로드시 오류가 발생하였습니다. index:[" + index + "]");
             }
+            ++index;
         }
         return new ResponseEntity<>(files, HttpStatus.OK);
     }

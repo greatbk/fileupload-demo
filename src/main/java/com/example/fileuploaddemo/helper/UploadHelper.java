@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 
 @Slf4j
@@ -148,7 +149,7 @@ public class UploadHelper {
 
     /**
      * BASE64 문자열로 전달받은 파일을 저장한다.
-     * @param uploadFile
+     * @param uploadFile 업로드한 파일 정보
      * @throws IOException
      */
     public static void save(UploadFile uploadFile) throws IOException {
@@ -183,5 +184,19 @@ public class UploadHelper {
             return MediaType.IMAGE_JPEG;
         }
         return MediaType.APPLICATION_OCTET_STREAM;
+    }
+
+    /**
+     * 파일을 BASE64 문자열로 변환해서 반환한다.
+     * @param file 파일
+     * @return BASE64 문자열
+     * @throws IOException
+     */
+    public static String encodeBase64(File file) throws IOException {
+        if(file != null && file.exists() && file.isFile())  {
+            byte[] bytes = Files.readAllBytes(file.toPath());
+            return new String(Base64.encodeBase64(bytes));
+        }
+        return null;
     }
 }
