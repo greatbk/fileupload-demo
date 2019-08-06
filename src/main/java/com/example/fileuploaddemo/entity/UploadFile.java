@@ -141,7 +141,11 @@ public class UploadFile {
         if(keepOriginalFilename) {
             return filename;
         }
-        return String.format("CGI-%s%d", RandomStringUtils.randomAlphabetic(5), System.currentTimeMillis());
+        if(StringUtils.isEmpty(serverFilename)) {
+            return String.format("CGI-%s%d", RandomStringUtils.randomAlphabetic(5), System.currentTimeMillis());
+        } else {
+            return serverFilename;
+        }
     }
 
     /**
